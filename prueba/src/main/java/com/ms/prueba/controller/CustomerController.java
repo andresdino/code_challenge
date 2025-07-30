@@ -144,7 +144,7 @@ public class CustomerController extends BaseController<Customer>{
 
     @Operation(
             summary = "Actualizar los datos registrados de cada cliente",
-            description = "Deve colocar los campos a modificar especificando el Id"
+            description = "Deve colocar los campos a modificar especificando el Id obción disponible unicamente para usuarios con el rol de ADMIN"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "actualizado corectamente correctamente"),
