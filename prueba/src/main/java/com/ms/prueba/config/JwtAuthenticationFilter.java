@@ -78,7 +78,7 @@ public class JwtAuthenticationFilter extends GenericFilter {
                 return;
             }
         } else {
-            // Si la ruta requiere autenticación y no se ha enviado token, rechaza la petición
+
             if (requiresAuth(http)) {
                 httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 httpResponse.getWriter().write("Token JWT requerido");
@@ -103,6 +103,7 @@ public class JwtAuthenticationFilter extends GenericFilter {
                 || path.equals("/prueba/swagger-token")
                 || path.startsWith("/prueba/swagger-ui")
                 || path.startsWith("/prueba/v3/api-docs")
+                || path.startsWith("/prueba/actuator")
                 || path.equals("/prueba/api/v1/customer/createUser"));
     }
 

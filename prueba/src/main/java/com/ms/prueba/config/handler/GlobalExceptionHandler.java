@@ -13,19 +13,19 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    // 500 - Internal Server Error
+    
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGenericException(Exception ex) {
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error interno", ex.getMessage());
     }
 
-    // 401 - Unauthorized
+    
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<?> handleAccessDenied(AccessDeniedException ex) {
         return buildResponse(HttpStatus.UNAUTHORIZED, "Acceso no autorizado", ex.getMessage());
     }
 
-    // 422 - Unprocessable Entity (por ejemplo, errores de validación de DTOs)
+    
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationErrors(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
                 ));
     }
 
-    // 400 - Bad Request
+    
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<?> handleIllegalArgument(IllegalArgumentException ex) {
         return buildResponse(HttpStatus.BAD_REQUEST, "Parámetro inválido", ex.getMessage());

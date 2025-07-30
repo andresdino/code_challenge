@@ -6,6 +6,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
@@ -16,9 +18,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
  */
 @Configuration
 @EnableWebSecurity
-@EnableCaching // Habilita el uso de caché en toda la aplicación
+@EnableCaching 
 public class SecurityConfig {
 
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
     /**
      * Define la cadena de filtros de seguridad de Spring Security.
      *
@@ -37,19 +43,20 @@ public class SecurityConfig {
             JwtAuthenticationFilter jwtFilter
     ) throws Exception {
         http
-                // Deshabilita la protección CSRF para simplificar pruebas y desarrollo
+                
                 .csrf(csrf -> csrf.disable())
 
-                // Se configura el proveedor de autenticación personalizado
+                
                 .authenticationProvider(authProvider)
 
-                // Se agrega el filtro de JWT antes del filtro estándar de autenticación
+                
                 .addFilterBefore(jwtFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
 
-                // Configuración de las reglas de autorización
+                
                 .authorizeHttpRequests(auth -> auth
-                        // Endpoints públicos que no requieren autenticación
+                        
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/v1/**").hasAnyRole("ADMIN", "USER","MODERATOR")
 
                         .requestMatchers(
@@ -60,28 +67,28 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/swagger-token",
-                                "/prueba/swagger-token"
+                                "/prueba/swagger-token",
+                                "/actuator"
                         ).permitAll()
-                       // .requestMatchers("/swagger-token").permitAll()
-                        // Cualquier otra petición requiere autenticación
+                       
+                        
                         .anyRequest().authenticated()
                 )
 
 
-                // Configuración del login por formulario
+                
                 .formLogin(form -> form
-
-                        .successHandler(successHandler) // Manejador personalizado al autenticarse correctamente
+                        .successHandler(successHandler) 
                         .permitAll()
                 )
 
-                // Configuración del logout
+                
                 .logout(logout -> logout
-                        .logoutSuccessUrl("/login?logout") // Redirige al login tras cerrar sesión
+                        .logoutSuccessUrl("/login?logout") 
                         .permitAll()
                 );
 
-        return http.build(); // Retorna el objeto de configuración final
+        return http.build(); 
     }
 
     /**

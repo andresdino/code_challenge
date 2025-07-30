@@ -2,11 +2,9 @@ package com.ms.prueba.service.implement;
 
 import com.ms.prueba.dto.UserDto;
 import com.ms.prueba.entity.User;
-import com.ms.prueba.repository.interfaces.BaseRepository;
 import com.ms.prueba.repository.interfaces.UserRepository;
 import com.ms.prueba.service.interfaces.IUserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,6 +17,7 @@ public class UserService extends BaseService<User> implements IUserService {
 
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * Constructor que recibe los repositorios necesarios para operar.
@@ -26,9 +25,10 @@ public class UserService extends BaseService<User> implements IUserService {
      * @param userRepository Repositorio específico de usuarios.
      * @param auditService   Servicio de auditoría para registrar acciones.
      */
-    public UserService(UserRepository userRepository, AuditoriaService auditService) {
-        super(userRepository, auditService); // Inyección en la clase base
-        this.userRepository = userRepository; // Inyección específica en esta clase
+    public UserService(UserRepository userRepository, AuditoriaService auditService, PasswordEncoder passwordEncoder) {
+        super(userRepository, auditService); 
+        this.userRepository = userRepository; 
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -40,14 +40,14 @@ public class UserService extends BaseService<User> implements IUserService {
      */
     @Override
     public UserDto authenticate(String username, String rawPassword) {
-        UserDto user = userRepository.getUserWithRole(username, rawPassword);
+        UserDto user = userRepository.getUserWithRole(username);
 
         if (user == null) {
-            // Usuario o contraseña incorrectos
+            
             return null;
         }
 
-        // Aquí podrías agregar una validación adicional si las contraseñas están encriptadas
+        
         System.out.println(user.getPassword());
 
         return user;

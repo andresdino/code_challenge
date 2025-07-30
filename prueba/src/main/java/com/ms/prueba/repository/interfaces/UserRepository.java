@@ -13,9 +13,10 @@ public interface UserRepository extends BaseRepository<User, Long> {
                 "u.password AS password, " +
                 "u.rol AS rol " +
                 "FROM user u " +
-                "WHERE u.username = :username AND u.password = :password",
+                "WHERE u.username = :username",
                 nativeQuery = true)
-        UserDto getUserWithRole(@Param("username") String username, @Param("password") String password);
+        UserDto getUserWithRole(@Param("username") String username);
+
         @Query(value = "SELECT " +
                 "u.username AS username, " +
                 "u.password AS password, " +

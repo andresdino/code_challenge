@@ -53,10 +53,10 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
                                         Authentication authentication)
             throws IOException {
 
-        // Obtener el nombre de usuario autenticado
+
         String username = authentication.getName();
 
-        // Obtener el rol del usuario (ej. ROLE_ADMIN → ADMIN)
+
         String role = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .findFirst()
@@ -64,18 +64,18 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
                 .replace("ROLE_", "");
 
 
-        // Generar el token JWT
+
         String token = jwtUtil.generateToken(username, authentication.getAuthorities());
 
 
-        // Almacenar temporalmente el token (por ejemplo, en memoria)
+
         tokenStorage.saveToken(token);
 
-        // Logs informativos (opcional)
+
         System.out.println("✅ Usuario autenticado correctamente.");
         System.out.println("🔐 Token JWT generado: Bearer " + token);
 
-        // Redirigir al usuario a la interfaz Swagger
+
         response.sendRedirect("/prueba/swagger-ui/index.html");
     }
 }

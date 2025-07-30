@@ -24,13 +24,13 @@ import java.util.stream.Collectors;
 public class JwtUtil {
 
     @Autowired
-    private UserRepository userRepository; // o IUserService si tienes uno
+    private UserRepository userRepository; 
 
 
-    // Clave secreta para firmar el token. Debe ser suficientemente larga y segura.
-    private final String secret = "miSuperClaveSecretaJWTQueDebeSerLarga1234567890";
+    
+    private final String secret = "miSuperClaveSecretaJWTQ1234567890";
 
-    // Tiempo de expiración del token en milisegundos (1 hora)
+    
     private final long expirationMs = 1000 * 60 * 60;
 
     /**
@@ -50,7 +50,7 @@ public class JwtUtil {
      * @return Token JWT firmado.
      */
     public String generateToken(String username, Collection<? extends GrantedAuthority> authorities) {
-        // Suponiendo que lograste obtener el objeto User desde el UserDetails:
+        
         String role = "ROLE_" + ((UserDto) userRepository.findByUsername(username)).getRol();
 
 

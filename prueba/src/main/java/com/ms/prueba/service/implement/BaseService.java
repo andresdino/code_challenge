@@ -69,7 +69,7 @@ public abstract class BaseService<T extends BaseEntity> implements IBaseService<
 
         T objetoToUpdate = optionalT.get();
 
-        // Ignorar propiedades que no deben sobrescribirse
+        
         String[] ignoreProperties = { "id", "createAt", "deleteAt" };
         BeanUtils.copyProperties(entity, objetoToUpdate, ignoreProperties);
 
@@ -89,7 +89,7 @@ public abstract class BaseService<T extends BaseEntity> implements IBaseService<
 
         T objetoToDelete = optionalT.get();
         auditService.setAuditoriaOnDelete(objetoToDelete);
-        repository.save(objetoToDelete); // Guardar cambios en campo deleteAt
+        repository.save(objetoToDelete); 
     }
 }
 

@@ -33,7 +33,7 @@ public class CustomerController extends BaseController<Customer>{
         super(service);
         this.customerService = customerService;
     }
-//    Apis que son ignoradas
+
     @Override
     @Hidden
     public ResponseEntity<ApiResponseDto<Customer>> save(@RequestBody Customer entity) {
@@ -45,7 +45,7 @@ public class CustomerController extends BaseController<Customer>{
         throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Operacion no permitida para productos");
     }
 
-//    Apis funcionales
+
     @Operation(
             summary = "Crear un nuevo cliente",
             description = "Registra un cliente en la base de datos con nombre, edad, fecha de nacimiento, etc."
@@ -139,6 +139,82 @@ public class CustomerController extends BaseController<Customer>{
             );
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+    @Operation(
+            summary = "Actualizar los datos registrados de cada cliente",
+            description = "Deve colocar los campos a modificar especificando el Id"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "actualizado corectamente correctamente"),
+            @ApiResponse(responseCode = "500", description = "Error interno al procesar los datos")
+    })
+    @Override
+    public ResponseEntity<ApiResponseDto<Void>> update(@PathVariable Long id, @RequestBody Customer customer) {
+        try {
+            super .update(id, customer); // suponiendo que este método no retorna nada
+            ApiResponseDto<Void> response = new ApiResponseDto<>(
+                    "Customer actualizado correctamente",
+                    null,
+                    true
+            );
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponseDto<>("Error al actualizar: " + e.getMessage(), null, false));
+        }
+    }
+
+    @Operation(
+            summary = "Eliminar usuario",
+            description = "Borrado lógico de usaurios solo permitidos para usaurios con rol de ADMIN"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Eliminado exitosamente"),
+            @ApiResponse(responseCode = "500", description = "Error interno al procesar los datos")
+    })
+    @Override
+    public ResponseEntity<ApiResponseDto<Void>> delete(@PathVariable Long id) {
+        try {
+            super.delete(id);
+            ApiResponseDto<Void> response = new ApiResponseDto<>(
+                    "Borrado",
+                    null,
+                    true
+            );
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponseDto<>("Error al borrar: " + e.getMessage(), null, false));
+        }
+    }
+
+    @Operation(
+            summary = "Consultar usuario por id",
+            description = "Coloque el id del usaurio especifico que desea consulta"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Eliminado exitosamente"),
+            @ApiResponse(responseCode = "500", description = "Error interno al procesar los datos")
+    })
+    @Override
+    public ResponseEntity<ApiResponseDto<Customer>> findById(@PathVariable Long id) {
+        try {
+
+            ResponseEntity<ApiResponseDto<Customer>> entity = super.findById(id);
+            ApiResponseDto<Customer> originalBody = entity.getBody();
+
+            ApiResponseDto<Customer> response = new ApiResponseDto<>(
+                    "Usuario encontrado",
+                    originalBody != null ? originalBody.getData() : null,
+                    true
+            );
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponseDto<>("Error al buscar usuario: " + e.getMessage(), null, false));
         }
     }
 

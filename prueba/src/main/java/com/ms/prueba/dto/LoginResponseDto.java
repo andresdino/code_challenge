@@ -6,5 +6,5 @@ public class LoginResponseDto {
     public LoginResponseDto(String token) {
         this.token = token;
     }
-    // getter
+    
 }

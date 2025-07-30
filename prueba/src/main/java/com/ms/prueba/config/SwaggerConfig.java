@@ -1,6 +1,5 @@
 package com.ms.prueba.config;
 
-import com.ms.prueba.service.implement.TokenStorage;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -8,7 +7,6 @@ import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
-import io.swagger.v3.oas.annotations.security.SecurityScheme; // Anotación
 
 import org.springframework.context.annotation.Configuration;
 

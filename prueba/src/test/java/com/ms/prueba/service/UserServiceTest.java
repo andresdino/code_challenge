@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -27,6 +28,9 @@ public class UserServiceTest {
     @Mock
     private AuditoriaService auditoriaService;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     private UserService userService;
 
     /**
@@ -34,7 +38,7 @@ public class UserServiceTest {
      */
     @BeforeEach
     void setUp() {
-        userService = new UserService(userRepository, auditoriaService);
+        userService = new UserService(userRepository, auditoriaService,passwordEncoder);
     }
 
     /**
@@ -45,20 +49,25 @@ public class UserServiceTest {
     void authenticate_ShouldReturnUserDto_WhenUserExists() {
         // Arrange
         String username = "testuser";
-        String password = "1234";
+        String rawPassword = "1234";
+        String hashedPassword = "$2a$10$saltoooooooo....";
+
         UserDtoImpl mockUser = new UserDtoImpl();
         mockUser.setUsername(username);
-        mockUser.setPassword(password);
+        mockUser.setPassword(hashedPassword);
 
-        when(userRepository.getUserWithRole(username, password)).thenReturn(mockUser);
+        when(userRepository.getUserWithRole(username)).thenReturn(mockUser);
+        lenient().when(passwordEncoder.matches(rawPassword, hashedPassword)).thenReturn(true); // evita la excepción
 
         // Act
-        UserDto result = userService.authenticate(username, password);
+        UserDto result = userService.authenticate(username, rawPassword);
 
         // Assert
         assertNotNull(result);
         assertEquals(username, result.getUsername());
     }
+
+
 
     /**
      * Verifica que el método {@code authenticate} retorne {@code null}
@@ -67,7 +76,7 @@ public class UserServiceTest {
     @Test
     void authenticate_ShouldReturnNull_WhenUserNotFound() {
         // Arrange
-        when(userRepository.getUserWithRole("wrong", "wrong")).thenReturn(null);
+        when(userRepository.getUserWithRole("wrong")).thenReturn(null);
 
         // Act
         UserDto result = userService.authenticate("wrong", "wrong");
@@ -75,4 +84,5 @@ public class UserServiceTest {
         // Assert
         assertNull(result);
     }
+
 }
